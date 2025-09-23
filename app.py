@@ -82,7 +82,7 @@ def force_database_recreation():
 # Initialize Flask app
 app = Flask(__name__)
 app.config.from_object(Config)
-app.secret_key = 'your_super_secret_key'
+app.secret_key = os.getenv('SECRET_KEY')
 CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
@@ -1040,6 +1040,6 @@ if __name__ == '__main__':
         app, 
         debug=True, 
         host='0.0.0.0', 
-        port=5000,
+        port=int(os.getenv('PORT', 5000)), # ✅ FIX: Use the dynamic port
         allow_unsafe_werkzeug=True
     )
