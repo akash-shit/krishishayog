@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-translate="feature-soil-monitoring">Soil Monitoring - Krishi Sahiyog</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Overall Page Styling */
+        :root {
+            --primary-color: #4CAF50; /* Fresh green */
+            --secondary-color: #FFC107; /* Warm yellow */
+            --background-light: #F9F9F9; /* Soft background */
+            --text-dark: #333; /* Dark text */
+            --text-light: #fff; /* Light text */
+            --card-bg: #fff;
+            --border-color: #ddd;
+            --focus-glow: rgba(76, 175, 80, 0.4);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            background-color: var(--background-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            transition: background-color 0.5s ease;
+        }
+        
+        /* Navbar & Header */
+        .navbar {
+            background-color: #2e7d32; /* A deeper shade of green for the header */
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            animation: slideInDown 0.8s ease-out;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 1.5rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .logo .fas {
+            font-size: 2rem;
+            margin-right: 0.5rem;
+            animation: growAndPulse 2s infinite ease-in-out;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 400;
+            transition: color 0.3s ease, transform 0.2s ease;
+            position: relative;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--secondary-color);
+            transform: scaleX(0);
+            transform-origin: bottom right;
+            transition: transform 0.3s ease-out;
+        }
+
+        .nav-links a:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+        
+        .nav-links a:hover {
+            color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        .language-selector {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .language-selector .lang-btn {
+            background: none;
+            border: 2px solid var(--text-light);
+            color: var(--text-light);
+            padding: 0.5rem 0.8rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .language-selector .lang-btn.active {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+            color: var(--text-dark);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Main Content & Cards */
+        main {
+            padding: 4rem 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .soil-section {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            animation: fadeIn 1s ease-in-out;
+            text-align: center;
+        }
+
+        .soil-section h2 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            animation: slideInDown 1s ease-out;
+        }
+
+        .soil-section p {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-control, .btn {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px var(--focus-glow);
+        }
+
+        /* Sensor Grid */
+        .sensor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .sensor-item {
+            background-color: #e8f5e9;
+            border-radius: 10px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .sensor-item:hover {
+            transform: scale(1.05);
+            background-color: #d1e7d5;
+        }
+
+        .sensor-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .sensor-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #555;
+            text-transform: uppercase;
+        }
+        
+        .sensor-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-top: 0.5rem;
+        }
+
+        /* Buttons */
+        .btn {
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .primary-btn {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            transition: all 0.3s ease;
+        }
+        
+        .primary-btn:hover {
+            background-color: #388E3C;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .primary-btn .fas {
+            font-size: 1.2rem;
+        }
+        
+        /* Results Section */
+        .results-section {
+            margin-top: 3rem;
+            padding: 2.5rem;
+            background-color: #e8f5e9;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            animation: slideInUp 0.8s ease-out;
+        }
+
+        .results-section h3 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes slideInUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes growAndPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            main {
+                padding: 2rem 1rem;
+            }
+            .card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body class="soil-page">
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-seedling"></i>
+                <span data-translate="app-name">Krishi Sahiyog</span>
+            </div>
+            
+            <div class="nav-links">
+                <a href="dashboard.html" data-translate="nav-dashboard">Dashboard</a>
+
+                                <!--<a href="/" data-translate="nav-home">Home</a> -->
+
+                <a href="diagnosis.html" data-translate="nav-diagnosis"> Plant Diagnosis</a>
+                <a href="soil.html" data-translate="nav-soil">Soil Analysis</a>
+                <a href="features.html" data-translate="nav-features">Features</a>
+                <a href="advisory.html" data-translate="nav-advisory">Advisory</a>
+                <a href="contact.html" data-translate="nav-contact">Contact</a>
+                
+                {% if session.get('logged_in') %}
+                    <a href="{{ url_for('logout') }}" id="authLink" data-translate="nav-logout">Logout ❌  </a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" id="authLink" data-translate="nav-login">Login</a>
+                {% endif %}
+            </div>
+            
+            <div class="language-selector">
+                <button class="lang-btn active" onclick="changeLanguage('en', event)">EN</button>
+                <button class="lang-btn" onclick="changeLanguage('hi', event)">हिं</button>
+                <button class="lang-btn" onclick="changeLanguage('bn', event)">বাং</button>
+            </div>
+        </div>
+    </nav>
+    <main>
+        <div class="container soil-section">
+            <h2 data-translate="feature-soil-monitoring">Soil Monitoring</h2>
+            <p data-translate="feature-soil-monitoring-desc">Real-time soil pH, moisture, and temperature monitoring through IoT sensors.</p>
+            <div class="card sensor-card">
+                <div class="form-group">
+                    <label data-translate="label-plant-type">Plant Type:</label>
+                    <select id="plantType" class="form-control">
+                        <option value="" data-translate="select-plant-default">Select Plant Type</option>
+                        <option value="wheat" data-translate="crop-wheat">Wheat</option>
+                        <option value="tomato" data-translate="crop-tomato">Tomato</option>
+                        <option value="potato" data-translate="crop-potato">Potato</option>
+                        <option value="rice" data-translate="crop-rice">Rice</option>
+                    </select>
+                </div>
+                <div class="sensor-grid">
+                    <div class="sensor-item">
+                        <i class="fas fa-tint sensor-icon"></i>
+                        <span class="sensor-label" data-translate="sensor-moisture">Moisture</span>
+                        <span class="sensor-value" id="soilMoisture">81%</span>
+                    </div>
+                    <div class="sensor-item">
+                        <i class="fas fa-flask sensor-icon"></i>
+                        <span class="sensor-label" data-translate="sensor-ph">pH Level</span>
+                        <span class="sensor-value" id="soilPH">6.2</span>
+                    </div>
+                    <div class="sensor-item">
+                        <i class="fas fa-temperature-high sensor-icon"></i>
+                        <span class="sensor-label" data-translate="sensor-temperature">Temperature</span>
+                        <span class="sensor-value" id="soilTemp">32°C</span>
+                    </div>
+                    <div class="sensor-item">
+                        <i class="fas fa-leaf sensor-icon"></i>
+                        <span class="sensor-label" data-translate="sensor-nitrogen">Nitrogen</span>
+                        <span class="sensor-value" id="nitrogen">20 ppm</span>
+                    </div>
+                    <div class="sensor-item">
+                        <i class="fas fa-leaf sensor-icon"></i>
+                        <span class="sensor-label" data-translate="sensor-phosphorus">Phosphorus</span>
+                        <span class="sensor-value" id="phosphorus">16 ppm</span>
+                    </div>
+                    <div class="sensor-item">
+                        <i class="fas fa-leaf sensor-icon"></i>
+                        <span class="sensor-label" data-translate="sensor-potassium">Potassium</span>
+                        <span class="sensor-value" id="potassium">26 ppm</span>
+                    </div>
+                    <div class="sensor-item">
+                        <i class="fas fa-cloud-showers-heavy sensor-icon"></i>
+                        <span class="sensor-label" data-translate="sensor-rainfall">Rainfall</span>
+                        <span class="sensor-value" id="rainfall">200 mm</span>
+                    </div>
+                    <div class="sensor-item">
+                        <i class="fas fa-bolt sensor-icon"></i>
+                        <span class="sensor-label" data-translate="sensor-ec">Electrical Conductivity</span>
+                        <span class="sensor-value" id="electricalConductivity">2 ds/m</span>
+                    </div>
+                </div>
+                <button class="btn primary-btn" id="refreshSensorBtn" onclick="diagnoseSoil()">
+                    <i class="fas fa-search"></i> <span data-translate="btn-diagnose-soil">Get Fertilizer Recommendation</span>
+                </button>
+            </div>
+            <div id="soilAnalysis" class="results-section" style="display: none;">
+                <h3 data-translate="soil-analysis">Soil Analysis</h3>
+                <div id="resultsContent" class="results-content">
+                    <p data-translate="no-data">Analysis results will appear here...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 <span data-translate="app-name">Krishi Sahiyog</span>. All rights reserved.</p>
+        </div>
+    </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script>
+        // This object contains all the translations for the page
+        const translations = {
+            en: {
+                "app-name": "Krishi Sahiyog",
+                "nav-home": "Home",
+                "nav-diagnosis": "Plant Diagnosis",
+                "nav-soil": "Soil Analysis",
+                "nav-chatbot":"Smart Assistant",
+                "nav-features": "Features",
+                "nav-advisory": "Advisory",
+                "nav-contact": "Contact",
+                "nav-dashboard": "Dashboard",
+                "nav-logout": "Logout",
+                "nav-login": "Login",
+                "feature-soil-monitoring": "Soil Monitoring",
+                "feature-soil-monitoring-desc": "Real-time soil pH, moisture, and temperature monitoring through IoT sensors.",
+                "label-plant-type": "Plant Type:",
+                "select-plant-default": "Select Plant Type",
+                "crop-wheat": "Wheat",
+                "crop-tomato": "Tomato",
+                "crop-potato": "Potato",
+                "crop-rice": "Rice",
+                "sensor-moisture": "Moisture",
+                "sensor-ph": "pH Level",
+                "sensor-temperature": "Temperature",
+                "sensor-nitrogen": "Nitrogen",
+                "sensor-phosphorus": "Phosphorus",
+                "sensor-potassium": "Potassium",
+                "sensor-ec":"Electrical Conductivity",
+                "sensor-rainfall":"Rainfall",
+                "btn-refresh": "Refresh Data",
+                "btn-diagnose-soil": "Get Fertilizer Recommendation",
+                "soil-analysis": "Soil Analysis",
+                "no-data": "Analysis results will appear here...",
+                "recommended-fertilizer-template": "Based on the soil analysis, the recommended fertilizer for <b>{crop}</b> is <b>{fertilizer}</b>. 🌱"
+            },
+            hi: {
+                "app-name": "कृषि सहयोग",
+                "nav-home": "होम",
+                "nav-diagnosis": "पौधे का निदान",
+                "nav-soil": "मिट्टी का विश्लेषण",
+                "nav-chatbot":"स्मार्ट सहाय",
+                "nav-features": "विशेषताएं",
+                "nav-advisory": "सलाह",
+                "nav-contact": "संपर्क",
+                "nav-dashboard": "डैशबोर्ड",
+                "nav-logout": "लॉग आउट",
+                "nav-login": "लॉग इन",
+                "feature-soil-monitoring": "मिट्टी की निगरानी",
+                "feature-soil-monitoring-desc": "IoT सेंसर के माध्यम से वास्तविक समय में मिट्टी के pH, नमी, और तापमान की निगरानी।",
+                "label-plant-type": "पौधे का प्रकार:",
+                "select-plant-default": "पौधे का प्रकार चुनें",
+                "crop-wheat": "गेहूं",
+                "crop-tomato": "टमाटर",
+                "crop-potato": "आलू",
+                "crop-rice": "चावल",
+                "sensor-moisture": "नमी",
+                "sensor-ph": "पीएच स्तर",
+                "sensor-temperature": "तापमान",
+                "sensor-nitrogen": "नाइट्रोजन",
+                "sensor-phosphorus": "फास्फोरस",
+                "sensor-potassium": "पोटेशियम",
+                "sensor-ec":"इलेक्ट्रिकल कंडक्टीविटी",
+                "sensor-rainfall":"बारिश",
+                "btn-refresh": "डेटा रीफ्रेश करें",
+                "btn-diagnose-soil": "उर्वरक की सिफारिश प्राप्त करें",
+                "soil-analysis": "मिट्टी का विश्लेषण",
+                "no-data": "विश्लेषण के परिणाम यहां दिखाई देंगे...",
+                "recommended-fertilizer-template": "मिट्टी के विश्लेषण के आधार पर, <b>{crop}</b> के लिए अनुशंसित उर्वरक <b>{fertilizer}</b> है। 🌱"
+            },
+            bn: {
+                "app-name": "কৃষি সহায়ক",
+                "nav-home": "হোম",
+                "nav-diagnosis": "গাছের রোগ নির্ণয়",
+                "nav-soil": "মাটি বিশ্লেষণ",
+                "nav-features": "বৈশিষ্ট্য",
+                "nav-chatbot":"স্মার্ট সহকারী",
+                "nav-advisory": "পরামর্শ",
+                "nav-contact": "যোগাযোগ",
+                "nav-dashboard": "ড্যাশবোর্ড",
+                "nav-logout": "লগ আউট",
+                "nav-login": "লগ ইন",
+                "feature-soil-monitoring": "মাটি পর্যবেক্ষণ",
+                "feature-soil-monitoring-desc": "আইওটি সেন্সর ব্যবহার করে রিয়েল-টাইম মাটি pH, আর্দ্রতা এবং তাপমাত্রা পর্যবেক্ষণ।",
+                "label-plant-type": "গাছের ধরন:",
+                "select-plant-default": "গাছের ধরন নির্বাচন করুন",
+                "crop-wheat": "গম",
+                "crop-tomato": "টমেটো",
+                "crop-potato": "আলু",
+                "crop-rice": "চাল",
+                "sensor-moisture": "আর্দ্রতা",
+                "sensor-ph": "পিএইচ স্তর",
+                "sensor-temperature": "তাপমাত্রা",
+                "sensor-nitrogen": "নাইট্রোজেন",
+                "sensor-phosphorus": "ফসফরাস",
+                "sensor-potassium": "পটাশিয়াম",
+                "sensor-ec":"বৈদ্যুতিক পরিবাহিতা",
+                "sensor-rainfall":"বৃষ্টিপাত",
+                "btn-refresh": "ডেটা রিফ্রেশ করুন",
+                "btn-diagnose-soil": "সার সুপারিশ পান",
+                "soil-analysis": "মাটি বিশ্লেষণ",
+                "no-data": "বিশ্লেষণ ফলাফল এখানে প্রদর্শিত হবে...",
+                "recommended-fertilizer-template": "মাটির বিশ্লেষণের উপর ভিত্তি করে, <b>{crop}</b> এর জন্য প্রস্তাবিত সার হলো <b>{fertilizer}</b>। 🌱"
+            }
+        };
+
+        function changeLanguage(lang, event) {
+            if (event) {
+                event.preventDefault();
+            }
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.getAttribute('data-translate');
+                if (translations[lang] && translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.lang-btn[onclick*="'${lang}'"]`).classList.add('active');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            changeLanguage('en'); 
+        });
+
+        // Placeholder for a function that would get sensor data from an API
+        function getSensorData() {
+            // In a real application, you would fetch data from an API endpoint here
+            return {
+                moisture: '65%',
+                ph: '6.8',
+                temp: '30.3°C',
+                nitrogen: '25 ppm',
+                phosphorus: '10 ppm',
+                potassium: '15 ppm',
+                rainfall: '200 mm',
+                electricalConductivity: '2 ds/m'
+            };
+        }
+
+        // The function that interacts with your ML model (backend)
+        function diagnoseSoil() {
+            const plantType = document.getElementById('plantType').value;
+            if (!plantType) {
+                alert('Please select a plant type.');
+                return;
+            }
+            
+            let fertilizerRecommendation;
+            switch (plantType) {
+                case 'wheat':
+                    fertilizerRecommendation = "Urea, Di-Ammonium Phosphate (DAP), and Zinc Sulphate";
+                    break;
+                case 'tomato':
+                    fertilizerRecommendation = "Nitrogen-rich fertilizer and Potash";
+                    break;
+                case 'potato':
+                    fertilizerRecommendation = "Potassium Sulphate, Nitrogen, and Phosphorus";
+                    break;
+                case 'rice':
+                    fertilizerRecommendation = "Urea, Single Super Phosphate (SSP), and Muriate of Potash (MOP)";
+                    break;
+                default:
+                    fertilizerRecommendation = "A balanced NPK fertilizer";
+            }
+
+            const resultsContent = document.getElementById('resultsContent');
+            const currentLang = document.querySelector('.lang-btn.active').textContent.toLowerCase().trim();
+            const cropTranslationKey = `crop-${plantType}`;
+            const cropName = translations[currentLang][cropTranslationKey] || translations.en[cropTranslationKey];
+            const fertilizerTemplate = translations[currentLang]['recommended-fertilizer-template'] || translations.en['recommended-fertilizer-template'];
+
+            const finalMessage = fertilizerTemplate
+                .replace('{crop}', cropName)
+                .replace('{fertilizer}', fertilizerRecommendation);
+            
+            resultsContent.innerHTML = finalMessage;
+            document.getElementById('soilAnalysis').style.display = 'block';
+            
+            // Update all translations on the page again after the result is displayed
+            changeLanguage(currentLang);
+        }
+        
+        // This function would be called by the Refresh button to get live sensor data
+        function refreshSensorData() {
+            const data = getSensorData();
+            document.getElementById('soilMoisture').textContent = data.moisture;
+            document.getElementById('soilPH').textContent = data.ph;
+            document.getElementById('soilTemp').textContent = data.temp;
+            document.getElementById('nitrogen').textContent = data.nitrogen;
+            document.getElementById('phosphorus').textContent = data.phosphorus;
+            document.getElementById('potassium').textContent = data.potassium;
+            // Updated to reflect the new sensor items
+            document.getElementById('rainfall').textContent = data.rainfall;
+            document.getElementById('electricalConductivity').textContent = data.electricalConductivity;
+        }
+
+        // Call refreshSensorData on page load to display initial values
+        document.addEventListener('DOMContentLoaded', refreshSensorData);
+    </script>
+    
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/auth.js"></script> 
+    
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/static/js/sw.js')
+                .then(registration => console.log('SW registered'))
+                .catch(error => console.log('SW registration failed'));
+        }
+    </script>
+</body>
+</html>

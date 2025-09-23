@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="KrishiMitra Features - Explore our smart agricultural solutions">
+    <title data-translate="hero-title-features">Features - KrishiMitra</title>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+</head>
+<body class="features-page">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-seedling"></i>
+                <span data-translate="app-name">Krishi Sahyog</span>
+            </div>
+            
+            <div class="nav-links">
+                <a href="dashboard.html" data-translate="nav-dashboard">Dashboard</a>
+
+                                <!--<a href="/" data-translate="nav-home">Home</a> -->
+
+                <a href="diagnosis.html" data-translate="nav-diagnosis"> Plant Diagnosis</a>
+                <a href="soil.html" data-translate="nav-soil">Soil Analysis</a>
+                <a href="features.html" data-translate="nav-features">Features</a>
+                <a href="advisory.html" data-translate="nav-advisory">Advisory</a>
+                <a href="contact.html" data-translate="nav-contact">Contact</a>
+                
+                {% if session.get('logged_in') %}
+                    <a href="{{ url_for('logout') }}" id="authLink" data-translate="nav-logout">Logout ❌</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" id="authLink" data-translate="nav-login">Login</a>
+                {% endif %}
+            </div>
+            
+            <div class="language-selector">
+                <button class="lang-btn active" onclick="changeLanguage('en', event)">EN</button>
+                <button class="lang-btn" onclick="changeLanguage('hi', event)">हिं</button>
+                <button class="lang-btn" onclick="changeLanguage('bn', event)">বাং</button>
+            </div>
+        </div>
+    </nav>
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <h1 data-translate="hero-title-features">Explore Our Smart Features</h1>
+            <p data-translate="hero-subtitle-features">Providing comprehensive solutions for modern agriculture with cutting-edge technology.</p>
+        </section>
+
+        <!-- Features Grid -->
+        <div class="features-grid">
+            <!-- Plant Health Diagnosis -->
+            <div class="feature-card">
+                <div class="card-header">
+                    <i class="fas fa-camera"></i>
+                    <h3 data-translate="feature-plant-health">Plant Health Diagnosis</h3>
+                </div>
+                <p data-translate="feature-plant-health-desc">Upload plant images for AI-powered disease and pest detection using advanced computer vision.</p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check-circle"></i> Instant disease identification</li>
+                    <li><i class="fas fa-check-circle"></i> Treatment recommendations</li>
+                    <li><i class="fas fa-check-circle"></i> Severity assessment</li>
+                    <li><i class="fas fa-check-circle"></i> Multi-crop support</li>
+                </ul>
+            </div>
+
+            <!-- Soil Monitoring -->
+            <div class="feature-card">
+                <div class="card-header">
+                    <i class="fas fa-thermometer-half"></i>
+                    <h3 data-translate="feature-soil-monitoring">Soil Monitoring</h3>
+                </div>
+                <p data-translate="feature-soil-monitoring-desc">Real-time soil pH, moisture, and temperature monitoring through IoT sensors.</p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check-circle"></i> Real-time sensor data</li>
+                    <li><i class="fas fa-check-circle"></i> NPK level monitoring</li>
+                    <li><i class="fas fa-check-circle"></i> Automated alerts</li>
+                    <li><i class="fas fa-check-circle"></i> Historical data analysis</li>
+                </ul>
+            </div>
+
+            <!-- Weather Insights -->
+            <div class="feature-card">
+                <div class="card-header">
+                    <i class="fas fa-cloud-sun"></i>
+                    <h3 data-translate="feature-weather">Weather Insights</h3>
+                </div>
+                <p data-translate="feature-weather-desc">Get localized weather forecasts and agricultural alerts.</p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check-circle"></i> Hyperlocal weather data</li>
+                    <li><i class="fas fa-check-circle"></i> Crop-specific advisories</li>
+                    <li><i class="fas fa-check-circle"></i> Rainfall predictions</li>
+                    <li><i class="fas fa-check-circle"></i> Frost & heatwave alerts</li>
+                </ul>
+            </div>
+
+            <!-- Market Prices -->
+            <div class="feature-card">
+                <div class="card-header">
+                    <i class="fas fa-chart-line"></i>
+                    <h3 data-translate="feature-market-prices">Market Prices</h3>
+                </div>
+                <p data-translate="feature-market-prices-desc">Real-time crop prices and market trends.</p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check-circle"></i> Live market rates</li>
+                    <li><i class="fas fa-check-circle"></i> Price trend analysis</li>
+                    <li><i class="fas fa-check-circle"></i> Multiple market data</li>
+                    <li><i class="fas fa-check-circle"></i> Quality-based pricing</li>
+                </ul>
+            </div>
+
+            <!-- Crop Advisory -->
+            <div class="feature-card">
+                <div class="card-header">
+                    <i class="fas fa-seedling"></i>
+                    <h3 data-translate="feature-crop-advisory">Crop Advisory</h3>
+                </div>
+                <p data-translate="feature-crop-advisory-desc">Get personalized crop recommendations based on your farm conditions.</p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check-circle"></i> Soil-based recommendations</li>
+                    <li><i class="fas fa-check-circle"></i> Season-specific guidance</li>
+                    <li><i class="fas fa-check-circle"></i> Fertilizer calculations</li>
+                    <li><i class="fas fa-check-circle"></i> Irrigation scheduling</li>
+                </ul>
+            </div>
+
+            <!-- AI Assistant -->
+            <div class="feature-card">
+                <div class="card-header">
+                    <i class="fas fa-robot"></i>
+                    <h3 data-translate="feature-ai-assistant">AI Assistant</h3>
+                </div>
+                <p data-translate="feature-ai-assistant-desc">Chat with our AI assistant for instant farming advice and support.</p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check-circle"></i> 24/7 support</li>
+                    <li><i class="fas fa-check-circle"></i> Multi-language capability</li>
+                    <li><i class="fas fa-check-circle"></i> Voice interaction</li>
+                    <li><i class="fas fa-check-circle"></i> Context-aware responses</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Technology Section -->
+        <section class="tech-section">
+            <h2>Powered by Advanced Technology</h2>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <i class="fas fa-brain"></i>
+                    <h3>AI & Machine Learning</h3>
+                    <p>Advanced algorithms for accurate disease detection and predictions</p>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-satellite"></i>
+                    <h3>IoT Sensors</h3>
+                    <p>Real-time environmental monitoring with precision sensors</p>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-cloud"></i>
+                    <h3>Cloud Computing</h3>
+                    <p>Scalable infrastructure for data processing and storage</p>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h3>Mobile First</h3>
+                    <p>Optimized for smartphones with offline capability</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Benefits Section -->
+        <section class="benefits-section">
+            <h2>Benefits for Farmers</h2>
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Increased Yield</h3>
+                    <p>Up to 30% improvement in crop production with data-driven decisions</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <h3>Cost Reduction</h3>
+                    <p>Optimized resource usage saves up to 25% on inputs</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Risk Mitigation</h3>
+                    <p>Early disease detection prevents crop losses</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>Time Saving</h3>
+                    <p>Automated monitoring reduces manual labor</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Floating Chat Interface -->
+    <div class="chatbot-container">
+        <div class="chat-toggle" onclick="toggleChat()" title="Chat with KrishiMitra Assistant">
+            <i class="fas fa-comments"></i>
+        </div>
+        
+        <div class="chat-window" id="chatWindow" style="display: none;">
+            <div class="chat-header">
+                <div class="chat-title">
+                    <i class="fas fa-robot"></i>
+                    <h4 data-translate="chat-title">KrishiMitra Assistant</h4>
+                </div>
+                <button class="chat-close" onclick="toggleChat()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-message bot">
+                    <div class="message-content bot-message">
+                        <span>🤖 <span data-translate="chat-welcome">Hello! Want to know more about our features? I'm here to help!</span></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-input-container">
+                <input 
+                    type="text" 
+                    class="chat-input" 
+                    id="chatInput" 
+                    placeholder="Type your message..." 
+                    onkeypress="handleChatKeyPress(event)"
+                    maxlength="500"
+                >
+                <button class="voice-btn" onclick="startVoiceChat()" title="Voice input">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                <button class="send-btn" onclick="sendMessage()" title="Send message">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <style>
+        /* Features page specific styles */
+        .feature-list {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+        
+        .feature-list li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        
+        .feature-list i {
+            color: var(--success-color);
+            margin-right: 0.5rem;
+        }
+        
+        .tech-section, .benefits-section {
+            margin: 4rem 0;
+            padding: 2rem 0;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .tech-section h2, .benefits-section h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+        }
+        
+        .tech-grid, .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .tech-item, .benefit-item {
+            text-align: center;
+            padding: 2rem 1rem;
+            background: var(--background-light);
+            border-radius: var(--border-radius);
+            transition: transform 0.3s ease;
+        }
+        
+        .tech-item:hover, .benefit-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .tech-item i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .benefit-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .benefit-icon i {
+            font-size: 2rem;
+            color: white;
+        }
+        
+        .tech-item h3, .benefit-item h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .tech-grid, .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</body>
+</html>

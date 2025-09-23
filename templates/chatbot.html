@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Krishi Sahyog - Smart Assistant</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+body { font-family: 'Inter', sans-serif; background: #f0fdf4; display:flex; flex-direction:column; min-height:100vh;}
+.navbar { background-color: #1a5632; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+.nav-container { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 1200px; margin: 0 auto; }
+.logo { display: flex; align-items: center; font-size: 1.5rem; font-weight: bold; }
+.logo i { margin-right: 0.5rem; }
+.nav-links { display: flex; gap: 1.5rem; align-items: center; }
+.nav-links a { color: white; text-decoration: none; font-size: 1rem; transition: color 0.3s ease; padding: 0.5rem 0.5rem; }
+.nav-links a:hover { color: #d1fae5; }
+.language-selector { display: flex; gap: 0.5rem; align-items: center; }
+.lang-btn { background-color: #d1fae5; color: #1a5632; font-weight: bold; padding: 0.5rem 1rem; border-radius: 9999px; cursor: pointer; transition: transform 0.2s, background-color 0.2s; }
+.lang-btn:hover { transform: scale(1.05); }
+.lang-btn.active { background-color: #10b981; color: white; }
+
+/* Chatbot container styles */
+.chat-container {width:100%; max-width:700px; height:80vh; background:white; border-radius:1rem; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 10px 20px rgba(0,0,0,0.1); margin: 2rem auto; }
+.chat-messages {flex:1; padding:1rem; overflow-y:auto; display:flex; flex-direction:column; gap:0.75rem; background:#f9fafb;}
+.message {max-width:75%; padding:0.8rem 1.2rem; border-radius:1rem; line-height:1.5; animation:fadeIn 0.3s ease; white-space: pre-wrap;}
+.user-message {align-self:flex-end; background:#bbf7d0; border-bottom-right-radius:0.4rem;}
+.bot-message {align-self:flex-start; background:#e5e7eb; border-bottom-left-radius:0.4rem;}
+.chat-input {display:flex; padding:0.8rem; border-top:1px solid #e5e7eb; align-items:center;}
+.chat-input input {flex:1; border:1px solid #d1d5db; border-radius:9999px; padding:0.6rem 1rem; outline:none;}
+.chat-input input:focus {border-color:#10b981; box-shadow:0 0 4px rgba(16,185,129,0.3);}
+.chat-input button {background:#10b981; color:white; border:none; border-radius:9999px; padding:0.6rem 1rem; margin-left:0.5rem; cursor:pointer;}
+.chat-input button:hover {background:#059669;}
+.chat-input button:disabled {background:#9ca3af; cursor:not-allowed;}
+.typing-indicator {font-style:italic; color:#4a5568; align-self:flex-start; background:#f3f4f6; padding:0.8rem 1.2rem; border-radius:1rem; border-bottom-left-radius:0.4rem;}
+.input-buttons { display: flex; gap: 0.5rem; margin-left: 0.5rem;}
+.input-buttons button { background: #10b981; color: white; border: none; border-radius: 9999px; width: 2.5rem; height: 2.5rem; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: transform 0.2s;}
+.input-buttons button:hover {transform: scale(1.05);}
+.input-buttons button:disabled {background: #9ca3af; cursor: not-allowed; transform: none;}
+.input-buttons button.active {background: #dc2626;}
+@keyframes fadeIn {from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);}}
+</style>
+</head>
+<body>
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="logo">
+            <i class="fas fa-seedling"></i>
+            <span data-translate="app-name">Krishi Sahyog</span>
+        </div>
+        
+        <div class="nav-links">
+            <a href="dashboard.html" data-translate="nav-dashboard">Dashboard</a>
+
+                                <!--<a href="/" data-translate="nav-home">Home</a> -->
+
+                <a href="diagnosis.html" data-translate="nav-diagnosis"> Plant Diagnosis</a>
+                <a href="soil.html" data-translate="nav-soil">Soil Analysis</a>
+                <a href="features.html" data-translate="nav-features">Features</a>
+                <a href="advisory.html" data-translate="nav-advisory">Advisory</a>
+                <a href="contact.html" data-translate="nav-contact">Contact</a>
+            
+            {% if session.get('logged_in') %}
+                <a href="{{ url_for('logout') }}" id="authLink" data-translate="nav-logout">Logout ❌</a>
+            {% else %}
+                <a href="{{ url_for('login') }}" id="authLink" data-translate="nav-login">Login</a>
+            {% endif %}
+        </div>
+        
+        <div class="language-selector">
+            <button class="lang-btn active" data-lang-key="en">EN</button>
+            <button class="lang-btn" data-lang-key="hi">हिं</button>
+            <button class="lang-btn" data-lang-key="bn">বাং</button>
+        </div>
+    </div>
+</nav>
+
+<div class="chat-container">
+    <div class="chat-messages" id="chat-messages"></div>
+    <div class="chat-input">
+        <input type="text" id="message-input" placeholder="Type your message...">
+        <div class="input-buttons">
+            <button id="send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+            <button id="mic-btn"><i class="fa-solid fa-microphone"></i></button>
+            <button id="clear-chat-btn"><i class="fa-solid fa-broom"></i></button>
+        </div>
+    </div>
+</div>
+
+<script>
+const chatMessages = document.getElementById('chat-messages');
+const messageInput = document.getElementById('message-input');
+const sendBtn = document.getElementById('send-btn');
+const micBtn = document.getElementById('mic-btn');
+const clearChatBtn = document.getElementById('clear-chat-btn');
+const langButtons = document.querySelectorAll('.lang-btn');
+const translateElements = document.querySelectorAll('[data-translate]');
+
+let currentLangCode = 'en-IN';
+const languages = {
+    'en': { 
+        code: 'en-IN', 
+        greeting: 'Hello! I am Krishi Sahyog, your agricultural assistant. I can provide you with information on farming, crops, weather, and more. How can I help you?', 
+        placeholder: 'Type your message...',
+        translations: {
+            'app-name': 'Krishi Sahyog',
+            'nav-dashboard': 'Dashboard',
+            'nav-diagnosis': 'Plant Diagnosis',
+            'nav-soil': 'Soil Analysis',
+            'nav-chatbot': 'Smart Assistant',
+            'nav-features': 'Features',
+            'nav-advisory': 'Advisory',
+            'nav-contact': 'Contact',
+            'nav-logout': 'Logout ❌',
+            'nav-login': 'Login'
+        }
+    },
+    'hi': { 
+        code: 'hi-IN', 
+        greeting: 'नमस्ते! मैं कृषि सहयोग हूं, आपका कृषि सहायक। मैं खेती, फसल, मौसम और अधिक पर जानकारी दे सकता हूं। मैं आपकी कैसे सहायता कर सकता हूं?', 
+        placeholder: 'अपना संदेश लिखें...',
+        translations: {
+            'app-name': 'कृषि सहयोग',
+            'nav-dashboard': 'डैशबोर्ड',
+            'nav-diagnosis': 'पौधों का निदान',
+            'nav-soil': 'मिट्टी विश्लेषण',
+            'nav-chatbot': 'स्मार्ट सहायक',
+            'nav-features': 'विशेषताएँ',
+            'nav-advisory': 'सलाह',
+            'nav-contact': 'संपर्क',
+            'nav-logout': 'लॉगआउट ❌',
+            'nav-login': 'लॉगिन'
+        }
+    },
+    'bn': { 
+        code: 'bn-IN', 
+        greeting: 'নমস্কার! আমি কৃষি সহযোগ, আপনার কৃষি বিষয়ক সহায়ক। আমি আপনাকে চাষাবাদ, ফসল, আবহাওয়া এবং আরও অনেক বিষয়ে তথ্য সরবরাহ করতে পারি। আমি আপনাকে কিভাবে সাহায্য করতে পারি?', 
+        placeholder: 'আপনার বার্তা লিখুন...',
+        translations: {
+            'app-name': 'কৃষি সহায়ক',
+            'nav-dashboard': 'ড্যাশবোর্ড',
+            'nav-diagnosis': 'গাছের রোগ নির্ণয়',
+            'nav-soil': 'মাটি বিশ্লেষণ',
+            'nav-chatbot': 'স্মার্ট সহকারী',
+            'nav-features': 'বৈশিষ্ট্য',
+            'nav-advisory': 'উপদেশ',
+            'nav-contact': 'যোগাযোগ',
+            'nav-logout': 'লগআউট ❌',
+            'nav-login': 'লগইন'
+        }
+    }
+};
+
+let recognition = null;
+let isRecording = false;
+let isLoading = false;
+
+// Load chat history from localStorage
+let chatHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+
+function saveHistory() {
+    localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+}
+
+function displayMessage(msg, sender){
+    const div = document.createElement('div');
+    div.className = `message ${sender}-message`;
+    div.textContent = msg;
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function renderHistory(){
+    chatMessages.innerHTML='';
+    const langData = Object.values(languages).find(l => l.code === currentLangCode);
+    if(chatHistory.length===0){
+        displayMessage(langData.greeting, 'bot');
+    } else {
+        chatHistory.forEach(turn => {
+            displayMessage(turn.user, 'user');
+            displayMessage(turn.bot, 'bot');
+        });
+    }
+}
+
+// Typing indicator
+function showTyping(){
+    const div = document.createElement('div');
+    div.className='typing-indicator';
+    div.textContent='Krishi Sahyog is thinking...';
+    div.id='typing-indicator';
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function removeTyping(){
+    const t=document.getElementById('typing-indicator');
+    if(t) t.remove();
+}
+
+function setLoadingState(loading) {
+    isLoading = loading;
+    sendBtn.disabled = loading;
+    micBtn.disabled = loading;
+    messageInput.disabled = loading;
+    
+    sendBtn.innerHTML = loading ? '<i class="fa-solid fa-spinner fa-spin"></i>' : '<i class="fa-solid fa-paper-plane"></i>';
+}
+
+// Send message to backend
+async function sendMessage(text, voice_support=false){
+    if(!text.trim() || isLoading) return;
+    
+    displayMessage(text,'user');
+    messageInput.value='';
+    showTyping();
+    setLoadingState(true);
+
+    try{
+        const response = await fetch('/chat',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({
+                message:text, 
+                voice_support:voice_support, 
+                lang: currentLangCode
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        removeTyping();
+        setLoadingState(false);
+        
+        if (data.error) {
+            displayMessage('Sorry, there was an error: ' + data.error, 'bot');
+        } else {
+            const botResponse = data.text || 'Sorry, I could not generate a response.';
+            displayMessage(botResponse, 'bot');
+            
+            chatHistory.push({ user: text, bot: botResponse });
+            saveHistory();
+        }
+
+    } catch(e){
+        removeTyping();
+        setLoadingState(false);
+        displayMessage('Sorry, something went wrong. Please try again.', 'bot');
+        console.error('Error:', e);
+    }
+}
+
+sendBtn.addEventListener('click',()=>sendMessage(messageInput.value));
+messageInput.addEventListener('keydown',(e)=>{if(e.key==='Enter' && !e.shiftKey) {e.preventDefault(); sendMessage(messageInput.value);}});
+
+// Language translation function for the navbar
+function translateNavbar(langKey) {
+    const translations = languages[langKey].translations;
+    translateElements.forEach(element => {
+        const key = element.getAttribute('data-translate');
+        if (translations[key]) {
+            element.textContent = translations[key];
+        }
+    });
+}
+
+// Language change functionality
+function changeLanguage(langKey) {
+    if (isLoading) return;
+    
+    currentLangCode = languages[langKey].code;
+    const langData = languages[langKey];
+    
+    // Update active button state
+    langButtons.forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`.lang-btn[data-lang-key="${langKey}"]`).classList.add('active');
+
+    messageInput.placeholder = langData.placeholder;
+
+    chatMessages.innerHTML = '';
+    displayMessage(langData.greeting, 'bot');
+    chatHistory = [];
+    saveHistory();
+    
+    // Translate the navbar
+    translateNavbar(langKey);
+
+    if(recognition && isRecording){
+        recognition.stop();
+    }
+}
+
+// Event listeners for the language buttons in the navbar
+langButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const langKey = button.getAttribute('data-lang-key');
+        changeLanguage(langKey);
+    });
+});
+
+// Clear Chat button functionality
+clearChatBtn.addEventListener('click', () => {
+    if (isLoading) return;
+    
+    chatHistory = [];
+    saveHistory();
+    renderHistory();
+});
+
+// Voice recognition setup
+if('SpeechRecognition' in window || 'webkitSpeechRecognition' in window){
+    recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    recognition.onstart = () => {
+        micBtn.classList.add('active');
+        isRecording = true;
+    };
+
+    recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        messageInput.value = transcript;
+        sendMessage(transcript, true);
+    };
+
+    recognition.onend = () => {
+        micBtn.classList.remove('active');
+        isRecording = false;
+    };
+
+    recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+        micBtn.classList.remove('active');
+        isRecording = false;
+        
+        if (event.error === 'not-allowed') {
+            alert('Microphone access denied. Please allow microphone access to use voice input.');
+        }
+    };
+
+    micBtn.addEventListener('click', ()=>{
+        if (isLoading) return;
+        
+        if(isRecording){
+            recognition.stop();
+        } else {
+            recognition.lang = currentLangCode;
+            recognition.start();
+        }
+    });
+} else {
+    micBtn.style.display='none';
+}
+
+// Initial render and translation
+changeLanguage('en');
+messageInput.focus();
+</script>
+
+</body>
+</html>
