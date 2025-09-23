@@ -1,63 +1,35 @@
-# KrishiMitra - Smart Agricultural Advisory System
-# Python Dependencies
-
-# Web Framework
-Flask==2.3.3
-Flask-CORS==4.0.0
-Flask-SocketIO==5.3.6
-
-# Database
-SQLAlchemy==2.0.23
-Flask-SQLAlchemy==3.1.1
-
-# Machine Learning & AI
-tensorflow==2.20.0
-opencv-python==4.8.1.78
-Pillow==10.0.1
-numpy==1.24.3
-scikit-learn==1.3.0
-matplotlib==3.7.2
-seaborn==0.12.2
-
-# IoT and Hardware (for Raspberry Pi)
+Flask
+Flask-CORS
+Flask-SocketIO
+SQLAlchemy
+Flask-SQLAlchemy
+tensorflow
+opencv-python
+Pillow
+numpy
+scikit-learn
+matplotlib
+seaborn
 RPi.GPIO==0.7.1; sys_platform == "linux"
 adafruit-circuitpython-ads1x15==2.2.21; sys_platform == "linux"
 adafruit-blinka==8.22.2; sys_platform == "linux"
-
-# API and Web Services
-requests==2.31.0
-python-socketio==5.9.0
-eventlet==0.33.3
-
-# Language Translation
-googletrans==4.0.0rc1
-
-# Data Processing
-pandas==2.1.1
-python-dateutil==2.8.2
-
-# Environment and Configuration
-python-dotenv==1.0.0
-
-# Image Processing
-opencv-contrib-python==4.8.1.78
-
-# Weather API
-pyowm==3.3.0
-
-# Utilities
-Werkzeug==2.3.7
-Jinja2==3.1.2
-MarkupSafe==2.1.3
-itsdangerous==2.1.2
-click==8.1.7
-
-# Development Dependencies
-pytest==7.4.2
-pytest-flask==1.3.0
-black==23.9.1
-flake8==6.1.0
-
-# Production Dependencies
-gunicorn==21.2.0
-python-decouple==3.8
+requests
+python-socketio
+eventlet
+googletrans
+pandas
+python-dateutil
+python-dotenv
+opencv-contrib-python
+pyowm
+Werkzeug
+Jinja2
+MarkupSafe
+itsdangerous
+click
+pytest
+pytest-flask
+black
+flake8
+gunicorn
+python-decouple
