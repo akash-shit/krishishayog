@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to Krishi Sahyog</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Poppins", sans-serif;
+            background: linear-gradient(135deg, #d4fdd6, #b0f1b8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .auth-container {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            animation: fadeIn 1.2s ease-in-out;
+        }
+
+        .auth-form {
+            background: rgba(255,255,255,0.9);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0px 8px 25px rgba(0,0,0,0.2);
+            width: 400px;
+        }
+
+        .auth-form h2 {
+            color: #2e7d32;
+            margin-bottom: 1rem;
+        }
+
+        .auth-form p {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            color: #1b5e20;
+        }
+
+        .auth-buttons a {
+            display: inline-block;
+            margin: 0.3rem 0.5rem;
+            padding: 0.7rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #43a047;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2e7d32;
+            transform: translateY(-2px);
+            box-shadow: 0px 6px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .btn-secondary:hover {
+            background: #a5d6a7;
+            transform: translateY(-2px);
+        }
+
+        /* Language Switcher */
+        .lang-switch {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+            gap: 10px;
+        }
+
+        .lang-btn {
+            padding: 0.4rem 0.8rem;
+            border: 1px solid #2e7d32;
+            border-radius: 10px;
+            cursor: pointer;
+            background: white;
+            color: #2e7d32;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .lang-btn:hover {
+            background: #2e7d32;
+            color: white;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="lang-switch">
+            <button type="button" class="lang-btn" onclick="setLanguage('en')">English</button>
+            <button type="button" class="lang-btn" onclick="setLanguage('hi')">हिंदी</button>
+            <button type="button" class="lang-btn" onclick="setLanguage('bn')">বাংলা</button>
+        </div>
+
+        <div class="auth-form">
+            <h2 data-translate="title">Welcome to Krishi Sahyog</h2>
+            <p data-translate="description">Please log in or register to access our smart agricultural advisory system.</p>
+            <div class="auth-buttons">
+                <a href="{{ url_for('login') }}" class="btn btn-primary" data-translate="login-btn">Login</a>
+                <a href="{{ url_for('register') }}" class="btn btn-secondary" data-translate="register-btn">Register</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const translations = {
+            en: {
+                "title": "Welcome to Krishi Sahyog",
+                "description": "Please log in or register to access our smart agricultural advisory system.",
+                "login-btn": "Login",
+                "register-btn": "Register"
+            },
+            hi: {
+                "title": "कृषी सहयोग में आपका स्वागत है",
+                "description": "हमारी स्मार्ट कृषि सलाह प्रणाली तक पहुंचने के लिए कृपया लॉगिन करें या पंजीकरण करें।",
+                "login-btn": "लॉगिन",
+                "register-btn": "पंजीकरण करें"
+            },
+            bn: {
+                "title": "কৃষি সহযোগে আপনাকে স্বাগতম",
+                "description": "আমাদের স্মার্ট কৃষি পরামর্শ ব্যবস্থায় প্রবেশ করতে লগইন করুন বা নিবন্ধন করুন।",
+                "login-btn": "লগইন",
+                "register-btn": "নিবন্ধন করুন"
+            }
+        };
+
+        function setLanguage(lang) {
+            document.querySelectorAll("[data-translate]").forEach(el => {
+                const key = el.getAttribute("data-translate");
+                el.innerHTML = translations[lang][key];
+            });
+        }
+    </script>
+</body>
+</html>

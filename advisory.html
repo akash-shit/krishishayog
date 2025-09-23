@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="KrishiMitra Advisory - Get personalized farming recommendations">
+    <title data-translate="hero-title-advisory">Advisory - KrishiMitra</title>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+</head>
+<body class="advisory-page">
+        <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-seedling"></i>
+                <span data-translate="app-name">Krishi Sahiyog</span>
+            </div>
+            
+            <div class="nav-links">
+                <a href="/dashboard" data-translate="nav-dashboard">Dashboard</a>
+
+                <!--<a href="/" data-translate="nav-home">Home</a> -->
+
+                <a href="/diagnosis" data-translate="nav-diagnosis"> Plant Diagnosis</a>
+                <a href="/soil" data-translate="nav-soil">Soil Analysis</a>
+                <a href="/chatbot" data-translate="nav-chatbot">Smart Assistant</a>
+                <a href="/features" data-translate="nav-features">Features</a>
+                <a href="/advisory" data-translate="nav-advisory">Advisory</a>
+                <a href="/contact" data-translate="nav-contact">Contact</a>
+                
+                {% if session.get('logged_in') %}
+                    <a href="{{ url_for('logout') }}" id="authLink" data-translate="nav-logout">Logout ❌  </a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" id="authLink" data-translate="nav-login">Login</a>
+                {% endif %}
+            </div>
+            
+            <div class="language-selector">
+                <button class="lang-btn active" onclick="changeLanguage('en', event)">EN</button>
+                <button class="lang-btn" onclick="changeLanguage('hi', event)">हिं</button>
+                <button class="lang-btn" onclick="changeLanguage('bn', event)">বাং</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <section class="hero-section">
+            <h1 data-translate="hero-title-advisory">Personalized Farming Advisory</h1>
+            <p data-translate="hero-subtitle-advisory">Get crop-specific recommendations based on soil health, weather, and more.</p>
+        </section>
+
+        <div class="advisory-form-container">
+            <div class="feature-card">
+                <div class="card-header">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h3>Get Personalized Advice</h3>
+                </div>
+                
+                <form id="advisoryForm" class="advisory-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cropType" data-translate="label-crop-type">Crop Type *</label>
+                            <select id="cropType" name="cropType" required class="form-control">
+                                <option value="">Select Crop</option>
+                                <option value="rice" data-translate="crop-rice">Rice</option>
+                                <option value="wheat" data-translate="crop-wheat">Wheat</option>
+                                <option value="potato" data-translate="crop-potato">Potato</option>
+                                <option value="tomato" data-translate="crop-tomato">Tomato</option>
+                                <option value="onion" data-translate="crop-onion">Onion</option>
+                                <option value="corn" data-translate="crop-corn">Corn</option>
+                                <option value="soybean" data-translate="crop-soybean">Soybean</option>
+                                <option value="other">Other Crops</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="farmSize" data-translate="label-farm-size">Farm Size (acres) *</label>
+                            <input type="number" id="farmSize" name="farmSize" required class="form-control" min="0.1" step="0.1" placeholder="e.g., 2.5">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="soilType">Soil Type</label>
+                            <select id="soilType" name="soilType" class="form-control">
+                                <option value="">Select Soil Type</option>
+                                <option value="clay">Clay</option>
+                                <option value="sandy">Sandy</option>
+                                <option value="loamy">Loamy</option>
+                                <option value="silt">Silt</option>
+                                <option value="peat">Peat</option>
+                                <option value="chalky">Chalky</option>
+                                <option value="unknown">Not Sure</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="irrigation">Irrigation Type</label>
+                            <select id="irrigation" name="irrigation" class="form-control">
+                                <option value="">Select Irrigation</option>
+                                <option value="rainfed">Rainfed</option>
+                                <option value="canal">Canal</option>
+                                <option value="well">Well/Tube Well</option>
+                                <option value="drip">Drip Irrigation</option>
+                                <option value="sprinkler">Sprinkler</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="region">Region/State</label>
+                        <input type="text" id="region" name="region" class="form-control" placeholder="e.g., West Bengal">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="specificIssue">Specific Issues (if any)</label>
+                        <textarea id="specificIssue" name="specificIssue" class="form-control" rows="3" placeholder="Describe any specific problems you're facing..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-lightbulb"></i>
+                        <span data-translate="btn-get-advice">Get Advice</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <section class="results-section" id="resultsSection" style="display: none;">
+            <h3>Your Personalized Advisory</h3>
+            <div id="resultsContent" class="results-content"></div>
+        </section>
+
+        <section class="seasonal-advisory">
+            <h2>Seasonal Farming Guide</h2>
+            <div class="seasonal-cards">
+                <div class="season-card">
+                    <div class="season-header kharif">
+                        <h3>Kharif Season<br>(June - October)</h3>
+                    </div>
+                    <div class="season-content">
+                        <h4>Recommended Crops</h4>
+                        <ul>
+                            <li>Rice (ধান)</li>
+                            <li>Maize (ভুট্টা)</li>
+                            <li>Cotton (কাপাস)</li>
+                            <li>Soybean (সয়াবিন)</li>
+                            <li>Groundnut (চিনাবাদাম)</li>
+                        </ul>
+                        
+                        <h4>Key Activities</h4>
+                        <ul>
+                            <li>Land preparation during pre-monsoon</li>
+                            <li>Sowing with onset of monsoon</li>
+                            <li>Weed management in early stages</li>
+                            <li>Proper drainage management</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="season-card">
+                    <div class="season-header rabi">
+                        <h3>Rabi Season<br>(November - March)</h3>
+                    </div>
+                    <div class="season-content">
+                        <h4>Recommended Crops</h4>
+                        <ul>
+                            <li>Wheat (গম)</li>
+                            <li>Barley (বার্লি)</li>
+                            <li>Mustard (সরিষা)</li>
+                            <li>Potato (আলু)</li>
+                            <li>Peas (মটর)</li>
+                        </ul>
+                        
+                        <h4>Key Activities</h4>
+                        <ul>
+                            <li>Soil moisture conservation</li>
+                            <li>Timely sowing before winter</li>
+                            <li>Frost protection measures</li>
+                            <li>Irrigation scheduling</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="season-card">
+                    <div class="season-header zaid">
+                        <h3>Zaid Season<br>(March - June)</h3>
+                    </div>
+                    <div class="season-content">
+                        <h4>Recommended Crops</h4>
+                        <ul>
+                            <li>Watermelon (তরমুজ)</li>
+                            <li>Cucumber (শসা)</li>
+                            <li>Bitter Gourd (করলা)</li>
+                            <li>Pumpkin (কুমড়ো)</li>
+                            <li>Sunflower (সূর্যমুখী)</li>
+                        </ul>
+                        
+                        <h4>Key Activities</h4>
+                        <ul>
+                            <li>Short duration crops</li>
+                            <li>Frequent irrigation</li>
+                            <li>Pest management</li>
+                            <li>Harvest before monsoon</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="crop-tips">
+            <h2>Crop-Specific Best Practices</h2>
+            <div class="tabs">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="openTab(event, 'rice-tab')" data-translate="crop-rice">Rice</button>
+                    <button class="tab-btn" onclick="openTab(event, 'wheat-tab')" data-translate="crop-wheat">Wheat</button>
+                    <button class="tab-btn" onclick="openTab(event, 'vegetable-tab')">Vegetables</button>
+                    <button class="tab-btn" onclick="openTab(event, 'cash-tab')">Cash Crops</button>
+                </div>
+                
+                <div id="rice-tab" class="tab-content active">
+                    <h3>Rice Cultivation Guide</h3>
+                    <div class="tip-grid">
+                        <div class="tip-item">
+                            <h4>🌱 Seed Selection</h4>
+                            <p>Choose high-yielding varieties suitable for your region like Swarna, MTU 1010, or CR Dhan  series.</p>
+                        </div>
+                        <div class="tip-item">
+                            <h4>💧 Water Management</h4>
+                            <p>Maintain 2-5 cm water depth during vegetative stage. Practice intermittent irrigation to save water.</p>
+                        </div>
+                        <div class="tip-item">
+                            <h4>🌾 Nutrient Management</h4>
+                            <p>Apply 100:50:50 kg NPK/ha. Use neem-coated urea for better nitrogen efficiency.</p>
+                        </div>
+                        <div class="tip-item">
+                            <h4>🐛 Pest Management</h4>
+                            <p>Monitor for stem borer, leaf folder, and brown plant hopper. Use IPM practices with biological controls.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="wheat-tab" class="tab-content">
+                    <h3>Wheat Cultivation Guide</h3>
+                    <div class="tip-grid">
+                        <div class="tip-item">
+                            <h4>🌱 Sowing Time</h4>
+                            <p>Optimum sowing time is November 15-30 for timely sown conditions in West Bengal.</p>
+                        </div>
+                        <div class="tip-item">
+                            <h4>🌾 Seed Rate</h4>
+                            <p>Use 100 kg/ha seed rate for normal sowing and 125 kg/ha for late sowing.</p>
+                        </div>
+                        <div class="tip-item">
+                            <h4>💧 Irrigation</h4>
+                            <p>Critical stages: Crown root initiation, tillering, jointing, flowering, and milk stage.</p>
+                        </div>
+                        <div class="tip-item">
+                            <h4>🐛 Disease Control</h4>
+                            <p>Watch for rusts and powdery mildew. Use resistant varieties and timely fungicide application.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="vegetable-tab" class="tab-content">
+                    <h3>Vegetable Cultivation Guide</h3>
+                    <div class="tip-grid">
+                        <div class="tip-item">
+                            <h4>🍅 Tomato</h4>
+                            <p>Transplant 4-5 week old seedlings. Stake plants for better yield. Watch for early blight and fruit borer.</p>
+                        </div>
+                        <div class="tip-item">
+                            <h4>🥔 Potato</h4>
+                            <p>Plant disease-free tubers. Hill up plants 3-4 weeks after planting. Monitor for late blight.</p>
+                        </div>
+                        <div class="tip-item">
+                            <h4>🥦 Cole Crops</h4>
+                            <p>Transplant in evening. Control diamond back moth in cabbage and cauliflower with Bt formulations.</p>
+                        </div>
+                        <div class="tip-item">
+                            <h4>🥒 Cucurbits</h4>
+                            <p>Provide support for climbing varieties. Hand pollination may be needed. Watch for powdery mildew.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="cash-tab" class="tab-content">
+                    <h3>Cash Crops Guide</h3>
+                    <div class="tip-grid">
+                        <div class="tip-item">
+                            <h4>🟡 Mustard</h4>
+                            <p>Sow in first fortnight of October. Use 4-5 kg/ha seed rate. Control aphids with imidacloprid.</p>
+                        </div>
+                        <div class="tip-item">
+                            <h4>🌻 Sunflower</h4>
+                            <p>Plant at 60x30 cm spacing. Provide support if needed. Protect from birds during maturity.</p>
+                        </div>
+                        <div class="tip-item">
+                            <h4>🥜 Groundnut</h4>
+                            <p>Well-drained sandy loam is ideal. Inoculate seeds with rhizobium. Practice crop rotation.</p>
+                        </div>
+                        <div class="tip-item">
+                            <h4>🌾 Sugarcane</h4>
+                            <p>Plant 3-budded setts. Practice earthing up. Manage borers and red rot disease.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="chatbot-container">
+        <div class="chat-toggle" onclick="toggleChat()" title="Chat with KrishiMitra Assistant">
+            <i class="fas fa-comments"></i>
+        </div>
+        
+        <div class="chat-window" id="chatWindow" style="display: none;">
+            <div class="chat-header">
+                <div class="chat-title">
+                    <i class="fas fa-robot"></i>
+                    <h4 data-translate="chat-title">KrishiMitra Assistant</h4>
+                </div>
+                <button class="chat-close" onclick="toggleChat()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-message bot">
+                    <div class="message-content bot-message">
+                        <span>🤖 <span data-translate="chat-welcome">Need farming advice? I'm here to help with all your agricultural questions!</span></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-input-container">
+                <input 
+                    type="text" 
+                    class="chat-input" 
+                    id="chatInput" 
+                    placeholder="Type your message..." 
+                    onkeypress="handleChatKeyPress(event)"
+                    maxlength="500"
+                >
+                <button class="voice-btn" onclick="startVoiceChat()" title="Voice input">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                <button class="send-btn" onclick="sendMessage()" title="Send message">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
