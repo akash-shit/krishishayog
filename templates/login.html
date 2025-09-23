@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Krishi Sahyog</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #d4fdd6, #b0f1b8);
+      overflow: hidden;
+    }
+
+    canvas#bgCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    .auth-container {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .auth-form {
+      background: rgba(255,255,255,0.9);
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0px 8px 25px rgba(0,0,0,0.2);
+      width: 350px;
+      text-align: center;
+      animation: fadeIn 1.2s ease-in-out;
+    }
+
+    .auth-form h2 {
+      margin-bottom: 1.5rem;
+      color: #2e7d32;
+      font-weight: 600;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+      text-align: left;
+    }
+
+    label {
+      font-size: 0.9rem;
+      color: #1b5e20;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.6rem;
+      border-radius: 12px;
+      border: 1px solid #81c784;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    input:focus {
+      border-color: #388e3c;
+      box-shadow: 0px 0px 8px rgba(56,142,60,0.5);
+    }
+
+    .btn {
+      background: #43a047;
+      border: none;
+      color: white;
+      padding: 0.8rem;
+      width: 100%;
+      font-size: 1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .btn:hover {
+      background: #2e7d32;
+      transform: translateY(-2px);
+      box-shadow: 0px 6px 15px rgba(0,0,0,0.2);
+    }
+
+    .switch-text {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .switch-text a {
+      color: #2e7d32;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .switch-text a:hover {
+      text-decoration: underline;
+    }
+
+    /* Language Switcher */
+    .lang-switch {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1rem;
+      gap: 10px;
+    }
+
+    .lang-btn {
+      padding: 0.4rem 0.8rem;
+      border: 1px solid #2e7d32;
+      border-radius: 10px;
+      cursor: pointer;
+      background: white;
+      color: #2e7d32;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+
+    .lang-btn:hover {
+      background: #2e7d32;
+      color: white;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Particles -->
+  <canvas id="bgCanvas"></canvas>
+
+  <div class="auth-container">
+    <form id="loginForm" class="auth-form">
+      <div class="lang-switch">
+        <button type="button" class="lang-btn" onclick="setLanguage('en')">English</button>
+        <button type="button" class="lang-btn" onclick="setLanguage('hi')">हिंदी</button>
+        <button type="button" class="lang-btn" onclick="setLanguage('bn')">বাংলা</button>
+      </div>
+
+      <h2 data-translate="title">🔑 Login to Krishi Sahyog</h2>
+
+      <div class="form-group">
+        <label for="email" data-translate="email-label">📧 Email</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password" data-translate="password-label">🔒 Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary" data-translate="login-btn">🚀 Login</button>
+      <p class="switch-text" data-translate="switch-text">Don’t have an account? <a href="{{ url_for('register') }}">Register here</a></p>
+    </form>
+  </div>
+
+  <script src="/static/js/particles.js"></script>
+  <script src="/static/js/auth.js"></script>
+  <script>
+    const translations = {
+      en: {
+        "title": "🔑 Login to Krishi Sahyog",
+        "email-label": "📧 Email",
+        "password-label": "🔒 Password",
+        "login-btn": "🚀 Login",
+        "switch-text": 'Don’t have an account? <a href="{{ url_for("register") }}">Register here</a>'
+      },
+      hi: {
+        "title": "🔑 कृषी सहयोग में लॉगिन करें",
+        "email-label": "📧 ईमेल",
+        "password-label": "🔒 पासवर्ड",
+        "login-btn": "🚀 लॉगिन",
+        "switch-text": 'खाता नहीं है? <a href="{{ url_for("register") }}">यहाँ पंजीकरण करें</a>'
+      },
+      bn: {
+        "title": "🔑 কৃষি সহযোগে লগইন করুন",
+        "email-label": "📧 ইমেইল",
+        "password-label": "🔒 পাসওয়ার্ড",
+        "login-btn": "🚀 লগইন",
+        "switch-text": 'অ্যাকাউন্ট নেই? <a href="{{ url_for("register") }}">এখানে নিবন্ধন করুন</a>'
+      }
+    };
+
+    function setLanguage(lang) {
+      document.querySelectorAll("[data-translate]").forEach(el => {
+        const key = el.getAttribute("data-translate");
+        el.innerHTML = translations[lang][key];
+      });
+    }
+  </script>
+</body>
+</html>

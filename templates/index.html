@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Krishi Sahyog - Smart Agricultural Advisory System with AI-powered insights">
+    <meta name="keywords" content="agriculture, farming, AI, crop advisory, plant disease detection">
+    <title data-translate="app-name">Krishi Sahyog</title>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+</head>
+<body>
+        <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-seedling"></i>
+                <span data-translate="app-name">Krishi Sahiyog</span>
+            </div>
+            
+            <div class="nav-links">
+                <a href="/dashboard" data-translate="nav-dashboard">Dashboard</a>
+
+                                <!--<a href="/" data-translate="nav-home">Home</a> -->
+
+                <a href="/diagnosis" data-translate="nav-diagnosis"> Plant Diagnosis</a>
+                <a href="/soil" data-translate="nav-soil">Soil Analysis</a>
+                <a href="/features" data-translate="nav-features">Features</a>
+                <a href="/advisory" data-translate="nav-advisory">Advisory</a>
+                <a href="/contact" data-translate="nav-contact">Contact</a>
+                {% if session.get('logged_in') %}
+                    <a href="{{ url_for('logout') }}" id="authLink" data-translate="nav-logout">Logout ❌ </a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" id="authLink" data-translate="nav-login">Login</a>
+                {% endif %}
+            </div>
+            
+            <div class="language-selector">
+                <button class="lang-btn active" onclick="changeLanguage('en', event)">EN</button>
+                <button class="lang-btn" onclick="changeLanguage('hi', event)">हिं</button>
+                <button class="lang-btn" onclick="changeLanguage('bn', event)">বাং</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <section class="hero-section">
+            <h1 data-translate="hero-title">Smart Agricultural Advisory System</h1>
+            <p data-translate="hero-subtitle">Empowering farmers with AI-powered insights, real-time data, and personalized recommendations</p>
+        </section>
+
+        <div class="features-grid" id="features">
+            <div class="feature-card">
+                <div class="card-header">
+                    <i class="fas fa-camera"></i>
+                    <h3 data-translate="feature-plant-health">Plant Health Diagnosis</h3>
+                </div>
+                <p data-translate="feature-plant-health-desc">Upload plant images for AI-powered disease and pest detection using advanced computer vision.</p>
+                
+                <div class="form-group">
+                    <label data-translate="label-plant-type">Plant Type:</label>
+                    <select id="plantType" class="form-control">
+                        <option value="" data-translate="select-plant-default">Select Plant Type</option>
+                        <option value="wheat" data-translate="crop-wheat">Wheat</option>
+                        <option value="tomato" data-translate="crop-tomato">Tomato</option>
+                        <option value="potato" data-translate="crop-potato">Potato</option>
+                        <option value="rice" data-translate="crop-rice">Rice</option>
+                    </select>
+                </div>
+                
+                <div class="upload-area" onclick="document.getElementById('plantImage').click()" id="uploadArea">
+                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                    <span data-translate="upload-plant-image">Click to upload plant image</span>
+                    <input type="file" id="plantImage" accept="image/*" style="display: none;" onchange="handleImageUpload(this)">
+                </div>
+                
+                <div id="imagePreview" class="image-preview"></div>
+                
+                <button class="btn btn-primary" onclick="diagnosePlant()" id="diagnoseBtn">
+                    <i class="fas fa-search"></i>
+                    <span data-translate="btn-diagnose">Diagnose Plant</span>
+                </button>
+            </div>
+
+            <div class="feature-card">
+                <div class="card-header">
+                    <i class="fas fa-thermometer-half"></i>
+                    <h3 data-translate="feature-soil-monitoring">Soil Monitoring</h3>
+                </div>
+                <p data-translate="feature-soil-monitoring-desc">Real-time soil pH, moisture, and temperature monitoring through IoT sensors.</p>
+                
+                <div class="sensor-grid">
+                    <div class="sensor-item">
+                        <div class="sensor-value" id="soilPH">6.2</div>
+                        <div class="sensor-label" data-translate="sensor-ph">pH Level</div>
+                    </div>
+                    <div class="sensor-item">
+                        <div class="sensor-value" id="soilMoisture">80</div>
+                        <div class="sensor-label" data-translate="sensor-moisture">Moisture</div>
+                    </div>
+                    <div class="sensor-item">
+                        <div class="sensor-value" id="soilTemp">32</div>
+                        <div class="sensor-label" data-translate="sensor-temperature">Temperature</div>
+                    </div>
+                    <div class="sensor-item">
+                        <div class="sensor-value" id="nitrogen">---</div>
+                        <div class="sensor-label" data-translate="sensor-nitrogen">Nitrogen</div>
+                    </div>
+                    <div class="sensor-item">
+                        <div class="sensor-value" id="phosphorus">---</div>
+                        <div class="sensor-label" data-translate="sensor-phosphorus">Phosphorus</div>
+                    </div>
+                    <div class="sensor-item">
+                        <div class="sensor-value" id="potassium">---</div>
+                        <div class="sensor-label" data-translate="sensor-potassium">Potassium</div>
+                    </div>
+                </div>
+                
+                <button class="btn btn-secondary" onclick="refreshSensorData()">
+                    <i class="fas fa-sync-alt"></i>
+                    <span data-translate="btn-refresh">Refresh Data</span>
+                </button>
+                
+                <div id="soilAnalysis" class="soil-analysis-container"></div>
+            </div>
+
+            <!-- Weather Insights -->
+                <div class="feature-card">
+            <div class="card-header">
+                <i class="fas fa-cloud-sun"></i>
+                <h3 data-translate="feature-weather">Weather Insights</h3>
+            </div>
+            <p data-translate="feature-weather-desc">Get localized weather forecasts and agricultural alerts.</p>
+            
+            <div class="weather-widget" id="weatherWidget">
+                <h4 id="locationName">Loading...</h4>
+                <p id="weatherDesc"></p>
+                <p>
+                    <strong data-translate="label-temperature">Temperature</strong>: 
+                    <span id="temperature">--</span>
+                </p>
+                <p>
+                    <strong data-translate="label-humidity">Humidity</strong>: 
+                    <span id="humidity">--</span>
+                </p>
+                <p>
+                    <strong data-translate="label-wind-speed">Wind Speed</strong>: 
+                    <span id="wind">--</span>
+                </p>
+                <p>
+                    <strong data-translate="label-precipitation">Precipitation</strong>: 
+                    <span id="precip">--</span>
+                </p>
+                <p>
+                    <strong data-translate="label-air-quality">Air Quality</strong>: 
+                    <span id="airQuality">--</span>
+                </p>
+            </div>
+            
+            <button class="btn btn-primary" onclick="KrishiSahiyog.updateWeather()">
+                <i class="fas fa-sync-alt"></i>
+                <span data-translate="btn-update-weather">Update Weather</span>
+            </button>
+        </div>
+
+            <!-- Market Prices -->
+            <div class="feature-card market-price-finder-card">
+                <div class="card-header">
+                    <i class="fas fa-chart-line"></i>
+                    <h3 data-translate="feature-market-price">Market Price Finder</h3>
+                </div>
+                <p data-translate="feature-market-price-desc">Select a crop to get its real-time market price.</p>
+                
+                <div class="form-group">
+                    <label data-translate="label-crop-type">Crop Type:</label>
+                    <select id="priceCropType" class="form-control">
+                        <option value="rice" data-translate="crop-rice">Rice</option>
+                        <option value="wheat" data-translate="crop-wheat">Wheat</option>
+                        <option value="potato" data-translate="crop-potato">Potato</option>
+                        <option value="tomato" data-translate="crop-tomato">Tomato</option>
+                        <option value="onion" data-translate="crop-onion">Onion</option>
+                        <option value="corn" data-translate="crop-corn">Corn</option>
+                        <option value="soybean" data-translate="crop-soybean">Soybean</option>
+                    </select>
+                </div>
+                
+                <button class="btn btn-primary" onclick="getMarketPrice()">
+                    <i class="fas fa-search-dollar"></i>
+                    <span data-translate="btn-get-price">Get Price</span>
+                </button>
+                
+                <div id="priceOutput" class="price-output">
+                    <div class="loading-placeholder" style="display: none;">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span data-translate="loading">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="card-header">
+                    <i class="fas fa-seedling"></i>
+                    <h3 data-translate="feature-crop-advisory">Crop Advisory</h3>
+                </div>
+                <p data-translate="feature-crop-advisory-desc">Get personalized crop recommendations based on your farm conditions.</p>
+                
+                <div class="form-group">
+                    <label data-translate="label-crop-type">Crop Type:</label>
+                    <select id="cropType" class="form-control">
+                        <option value="rice" data-translate="crop-rice">Rice</option>
+                        <option value="wheat" data-translate="crop-wheat">Wheat</option>
+                        <option value="potato" data-translate="crop-potato">Potato</option>
+                        <option value="tomato" data-translate="crop-tomato">Tomato</option>
+                        <option value="onion" data-translate="crop-onion">Onion</option>
+                        <option value="corn" data-translate="crop-corn">Corn</option>
+                        <option value="soybean" data-translate="crop-soybean">Soybean</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label data-translate="label-farm-size">Farm Size (acres):</label>
+                    <input type="number" id="farmSize" class="form-control" placeholder="Enter farm size" min="0.1" step="0.1">
+                </div>
+                
+                <button class="btn btn-primary" onclick="getCropAdvice()">
+                    <i class="fas fa-lightbulb"></i>
+                    <span data-translate="btn-get-advice">Get Advice</span>
+                </button>
+            </div>
+
+            <div class="feature-card">
+                <div class="card-header">
+                    <i class="fas fa-robot"></i>
+                    <h3 data-translate="feature-ai-assistant">AI Assistant</h3>
+                </div>
+                <p data-translate="feature-ai-assistant-desc">Chat with our AI assistant for instant farming advice and support.</p>
+                
+                <div class="assistant-buttons">
+                    <button class="btn btn-primary" onclick="toggleChat()">
+                        <i class="fas fa-comments"></i>
+                        <span data-translate="btn-chat">Start Chat</span>
+                    </button>
+                    
+                    <button class="btn btn-outline" onclick="startVoiceAssistant()">
+                        <i class="fas fa-microphone"></i>
+                        <span data-translate="btn-voice">Voice Assistant</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <section class="results-section" id="resultsSection" style="display: none;">
+            <h3 data-translate="results-title">Analysis Results</h3>
+            <div id="resultsContent" class="results-content"></div>
+        </section>
+    </div>
+
+    <div class="chatbot-container">
+        <div class="chat-toggle" onclick="toggleChat()" title="Chat with KrishiMitra Assistant">
+            <i class="fas fa-comments"></i>
+        </div>
+        
+        <div class="chat-window" id="chatWindow" style="display: none;">
+            <div class="chat-header">
+                <div class="chat-title">
+                    <i class="fas fa-robot"></i>
+                    <h4 data-translate="chat-title">KrishiMitra Assistant</h4>
+                </div>
+                <button class="chat-close" onclick="toggleChat()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-message bot">
+                    <div class="message-content bot-message">
+                        <span>🤖 <span data-translate="chat-welcome">Welcome! How can I help you today?</span></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-input-container">
+                <input 
+                    type="text" 
+                    class="chat-input" 
+                    id="chatInput" 
+                    placeholder="Type your message..." 
+                    onkeypress="handleChatKeyPress(event)"
+                    maxlength="500"
+                >
+                <button class="voice-btn" onclick="startVoiceChat()" title="Voice input">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                <button class="send-btn" onclick="sendMessage()" title="Send message">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p data-translate="loading">Loading...</p>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/auth.js"></script> 
+    
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/static/js/sw.js')
+                .then(registration => console.log('SW registered'))
+                .catch(error => console.log('SW registration failed'));
+        }
+    </script>
+</body>
+</html>

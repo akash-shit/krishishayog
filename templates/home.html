@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-translate="login-title">Login - Krishi Sahyog</title>
+  <link rel="stylesheet" href="/static/css/auth.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #bgCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .auth-container {
+      background: #fff;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .language-selector {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .lang-btn {
+      border: 2px solid #4CAF50;
+      color: #4CAF50;
+      background: transparent;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .lang-btn.active,
+    .lang-btn:hover {
+      background: #4CAF50;
+      color: #fff;
+    }
+
+    .auth-form h2 {
+      font-size: 24px;
+      margin-bottom: 25px;
+      color: #4CAF50;
+      font-weight: 700;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+      text-align: left;
+    }
+
+    .form-group label {
+      font-weight: 600;
+      margin-bottom: 6px;
+      display: block;
+      color: #333;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #4CAF50;
+      box-shadow: 0 0 8px rgba(76, 175, 80, 0.4);
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 14px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      background: #45a049;
+      transform: translateY(-2px);
+    }
+
+    .switch-text {
+      margin-top: 18px;
+      font-size: 14px;
+    }
+
+    .switch-text a {
+      color: #4CAF50;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .switch-text a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Particles -->
+  <canvas id="bgCanvas"></canvas>
+
+  <div class="auth-container">
+    <!-- Language Buttons -->
+    <div class="language-selector">
+      <button class="lang-btn active" onclick="changeLanguage('en', event)">EN</button>
+      <button class="lang-btn" onclick="changeLanguage('hi', event)">हिंदी</button>
+      <button class="lang-btn" onclick="changeLanguage('bn', event)">বাংলা</button>
+    </div>
+
+    <form id="loginForm" class="auth-form" method="POST" action="{{ url_for('login') }}">
+      <h2 data-translate="login-header">🔑 Login to Krishi Sahyog</h2>
+
+      <div class="form-group">
+        <label for="email" data-translate="login-email">📧 Email</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password" data-translate="login-password">🔒 Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+      </div>
+
+      <button type="submit" class="btn-primary" data-translate="login-button">🚀 Login</button>
+      <p class="switch-text" data-translate="login-switch-text">
+        Don’t have an account?
+        <a href="{{ url_for('register') }}" data-translate="login-switch-link">Register here</a>
+      </p>
+    </form>
+  </div>
+
+  <script src="/static/js/particles.js"></script>
+  <script src="/static/js/auth.js"></script>
+
+  <script>
+    const translations = {
+      en: {
+        "login-title": "Login - Krishi Sahyog",
+        "login-header": "🔑 Login to Krishi Sahyog",
+        "login-email": "📧 Email",
+        "login-password": "🔒 Password",
+        "login-button": "🚀 Login",
+        "login-switch-text": "Don’t have an account?",
+        "login-switch-link": "Register here"
+      },
+      hi: {
+        "login-title": "लॉग इन - कृषि सहयोग",
+        "login-header": "🔑 कृषि सहयोग में लॉग इन करें",
+        "login-email": "📧 ईमेल",
+        "login-password": "🔒 पासवर्ड",
+        "login-button": "🚀 लॉग इन करें",
+        "login-switch-text": "क्या आपका खाता नहीं है?",
+        "login-switch-link": "यहां रजिस्टर करें"
+      },
+      bn: {
+        "login-title": "লগইন - কৃষি সহযোগ",
+        "login-header": "🔑 কৃষি সহযোগে লগইন করুন",
+        "login-email": "📧 ইমেইল",
+        "login-password": "🔒 পাসওয়ার্ড",
+        "login-button": "🚀 লগইন",
+        "login-switch-text": "আপনার কি কোনো অ্যাকাউন্ট নেই?",
+        "login-switch-link": "এখানে রেজিস্টার করুন"
+      }
+    };
+
+    function changeLanguage(lang, event) {
+      if (event) event.preventDefault();
+
+      document.querySelectorAll("[data-translate]").forEach(el => {
+        const key = el.getAttribute("data-translate");
+        if (translations[lang] && translations[lang][key]) {
+          if (el.tagName === "INPUT" && el.hasAttribute("placeholder")) {
+            el.placeholder = translations[lang][key];
+          } else {
+            el.textContent = translations[lang][key];
+          }
+        }
+      });
+
+      document.querySelectorAll(".lang-btn").forEach(btn => btn.classList.remove("active"));
+      if (event && event.target) event.target.classList.add("active");
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      changeLanguage("en");
+    });
+  </script>
+</body>
+</html>
